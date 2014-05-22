@@ -1,0 +1,40 @@
+<tpl src="deprecated"
+     foo="{{entry}}"
+     replacement="Console 函数"
+     url="https://developer.mozilla.org/en-US/docs/Web/API/console.log" />
+
+<h3>描述</h3>
+<p>一个简单的日志函数，用于输出数据至控制台。按下键盘 <code>F12</code> 查看。</p>
+
+<p>输出数据将输出至「<abbr title="火狐已弃用该功能">错误控制台</abbr>」，包括所属脚本命名空间以及传入的文本。</p>
+
+<p>因此，下述脚本：</p>
+
+<pre>// ==UserScript==
+// @name          GM_log Example
+// @namespace     http://www.example.com/
+// ==/UserScript==
+
+GM_log("This is an example of GM_log");</pre>
+
+<p>将产生这样的输出：</p>
+<pre>http://www.example.com/GM_log Example: This is an example of GM_log</pre>
+
+<h3>语法</h3>
+<tpl src="api"
+     foo="GM_log"
+     args="$['message']"
+		/>
+
+<tpl src="arg"
+     arg="message"
+     type="String">
+	用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。
+</tpl>
+
+<h3>返回</h3>
+<p><code>undefined</code></p>
+
+<h3>例子</h3>
+<pre>GM_log("Hello, World!");
+GM_log("Warning, " + someInputField.value + "!");</pre>

@@ -1,0 +1,23 @@
+<h3>描述</h3>
+<p>该函数用于插入一段 CSS 到当前页面。它将插入一个新的 <code>&lt;style&gt;</code> 元素，添加输入的 CSS，然后插入到 <code>&lt;head&gt;</code> 末端。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+	foo="GM_addStyle"
+    args="$['css']"
+/>
+
+<tpl src="arg"
+     arg="css"
+     type="String">
+	样式表的文本内容。
+</tpl>
+
+<h3>例子</h3>
+<pre>GM_addStyle("body { color: white; background-color: black; } img { border: 0; }");</pre>
+
+<h3>笔记</h3>
+<ul>
+	<li>添加 <code>!important</code> 到 CSS 末尾可强行覆盖其属性值。</li>
+	<li>如有需要，可使用「多行文本」可能方便排版。</li>
+</ul>

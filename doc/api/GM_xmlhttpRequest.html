@@ -1,0 +1,206 @@
+<h3>描述</h3>
+<p>该函数主要用于实现跨域传输信息调用，如从 <code>www.example.com</code> 请求 <code>upload.example.com</code> 的内容。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+     foo="GM_xmlhttpRequest"
+     args="$['details']"
+		/>
+
+<tpl src="arg"
+     arg="details"
+     type="Object">
+</tpl>
+
+<dl>
+	<tpl src="define"
+	     term="method"
+	     type="String">
+		<p class="no-margin">请求方式，最常见的有 <code>GET</code> 与 <code>POST</code> 两种。</p>
+		<p>也有其它的请求方式，详细请翻阅 <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.2" target="_blank">w3 标准</a>。</p>
+	</tpl>
+	<tpl src="define"
+	     term="url"
+	     type="String">
+		请求访问的地址。
+	</tpl>
+
+
+	<tpl src="define"
+	     term="binary"
+	     type="Boolean" opt>
+		默认为 <code>false</code>。当为 <code>true</code> 的时候将使用 <code>.sendAsBinary()</code> 方法。
+	</tpl>
+	<tpl src="define"
+	     term="context"
+	     type="Object" opt>
+		任意对象。搞对象同时将为 Response 对象的 <code>context</code>。
+	</tpl>
+	<tpl src="define"
+	     term="data"
+	     type="String" opt>
+		提交给网页的数据，一般为 POST 操作。
+	</tpl>
+	<tpl src="define"
+	     term="headers"
+	     type="Object" opt>
+		提交给网页使用的 HTTP 头部数据。
+	</tpl>
+	<tpl src="define"
+	     term="user"
+	     type="String" opt>
+		提交给网站的用户名
+	</tpl>
+	<tpl src="define"
+	     term="password"
+	     type="String" opt>
+		提交给网站的密码 (详细: <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">基础用户验证</a>)。
+	</tpl>
+	<tpl src="define"
+	     term="synchronous"
+	     type="Boolean" opt>
+		当该值为 <code>true</code> 时，请求结束前将导致浏览器界面无项应。该模式下返回值即为返回数据。
+	</tpl>
+
+	<tpl src="define"
+	     term="timeout"
+	     type="Integer" opt>
+		超过指定数字的毫秒数后强行结束网页请求。
+	</tpl>
+	<tpl src="define"
+	     term="upload"
+	     type="Object" opt>
+		包含了 <code>onabort</code>、<code>onerror</code>、<code>onload</code>、<code>onprogress</code> 这四个上传回调函数的对象。
+	</tpl>
+
+	<tpl src="define"
+		 term="overrideMimeType"
+		 type="String" opt>
+		用于指定请求页面的元数据，如 <code>text/html; charset=GBK</code>
+	</tpl>
+
+	<hr/>
+
+	<dt>回调参数</dt>
+	<dd>
+		<p>回调参数将会被传入一个参数，请参考下方的「请求对象」。</p>
+		<p>可用的回调参数:</p>
+		<ul>
+			<li><i>onabort</i> 断开操作时的回调</li>
+			<li><i>onerror</i> 请求出错时的回调</li>
+			<li><i>onload</i> 请求完毕后时的回调</li>
+			<li><i>onprogress</i> 请求进度更换时的回调</li>
+			<li><i>onreadystatechange</i> 准备状态切换时的回调</li>
+			<li><i>ontimeout</i> 请求超时时的回调</li>
+		</ul>
+	</dd>
+</dl>
+
+<h3>请求对象</h3>
+<p>所有的回调参数调用时都会传入一个变量。根据回调的不同，下述数据可能不全部可用。</p>
+<ul>
+	<li><i>readyState</i> 准备状态</li>
+	<li><i>responseHeaders</i> 请求页面的头部信息</li>
+	<li><i>responseText</i> 请求的页面内容</li>
+	<li><i>status</i> 请求页面的状态，如 <code>404</code></li>
+	<li><i>statusText</i> 请求页面的内容，如 <code>404 Not Found</code></li>
+</ul>
+<p>其中，GM 还引用了自己独有的属性值:</p>
+<div class="reset-count-arg">
+	<tpl src="arg"
+	     arg="context"
+	     type="Object">
+
+		使用 API 时传入的 <code>context</code> 属性。
+	</tpl>
+	<tpl src="arg"
+	     arg="finalUrl"
+	     type="String">
+
+		获取跳转后的链接地址。
+	</tpl>
+</div>
+
+<p>而针对 <code>progress</code> 的进度回调，传参包含下述属性:</p>
+<ul>
+	<li>lengthComputable</li>
+	<li>loaded</li>
+	<li>total</li>
+</ul>
+
+<h3>返回</h3>
+<p>在默认(异步请求, asynchronous)请求方式下，将返回一个带有 <code>abort()</code> 方法的对象。</p>
+<p>在同步请求方式下，将返回一个带有 <code>abort()</code> 及下述属性的对象：</p>
+<ul>
+	<li>finalUrl</li>
+	<li>readyState</li>
+	<li>responseHeaders</li>
+	<li>responseText</li>
+	<li>status</li>
+	<li>statusText</li>
+</ul>
+
+<h3>例子</h3>
+<h4>最基础的调用</h4>
+<pre class="sample">GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://www.example.com/",
+	onload: function(response) {
+		alert(response.responseText);
+	}
+});</pre>
+
+<h4>GET 调用</h4>
+<pre class="sample">GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://www.example.net/",
+	headers: {
+		"User-Agent": "Mozilla/5.0",    // 如果未指定则使用浏览器默认值.
+		"Accept": "text/xml"            // 如果未指定则教给浏览器自行判断
+	},
+	onload: function(response) {
+		var responseXML = null;
+		// 插入 responseXML 到现有对象 (仅限于 XML 对象)
+		if (!response.responseXML) {
+			responseXML = new DOMParser()
+				.parseFromString(response.responseText, "text/xml");
+		}
+
+		GM_log([
+			response.status,
+			response.statusText,
+			response.readyState,
+			response.responseHeaders,
+			response.responseText,
+			response.finalUrl,
+			responseXML
+		].join("\n"));
+	}
+});</pre>
+
+<h4>POST 请求</h4>
+<p>当发出 POST 请求时，<b>大多数网站</b>都要求 <code>Content-Type</code> 头部设定为 <code>application/x-www-form-urlencoded</code> 才允许提交。</p>
+<pre class="sample">GM_xmlhttpRequest({
+	method: "POST",
+	url: "http://www.example.net/login",
+	data: "username=johndoe&password=xyz123",
+	headers: {
+		"Content-Type": "application/x-www-form-urlencoded"
+	},
+	onload: function(response) {
+		if (response.responseText.indexOf("Logged in as") > -1) {
+			location.href = "http://www.example.net/dashboard";
+		}
+	}
+});</pre>
+
+<h4>HEAD 请求</h4>
+<!-- 短链接解析我来了 -->
+<p>如同 HTTP 的定义，你可以发出一个 HEAD 请求只获取网页的头部信息。</p>
+<pre class="sample">GM_xmlhttpRequest({
+	url: "http://www.example.com",
+	method: "HEAD",
+	onload: function(response) {
+		GM_log(response.responseHeaders);
+	}
+});</pre>

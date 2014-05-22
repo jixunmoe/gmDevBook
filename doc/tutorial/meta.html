@@ -1,0 +1,144 @@
+<h3>描述</h3>
+<p><b>元数据</b> 包含了用户脚本的元数据。一般包含脚本名称、命名空间、执行地址和不执行的地址。</p>
+<p>这些数据一般为 JavaScript 注释形式储存于脚本顶部。</p>
+
+<h3>例子</h3>
+<pre>// ==UserScript==
+// @name          我的第一个脚本
+// @namespace     http://www.example.com/gmscripts
+// @description   看我突破天际的钻头
+// @include       http://www.example.com/*
+// @include       http://www.example.org/*
+// @exclude       http://www.example.org/foo
+// @require       https://example.com/foo.js
+// @resource      logo logo.png
+// @resource      yooo http://www.example.com/resource2.png
+// @version       1.0
+// @icon          http://www.example.net/icon.png
+// ==/UserScript==</pre>
+
+<h3>语法</h3>
+<p>元数据必须按照以下格式填写</p>
+<pre>// ==UserScript==
+// @属性名 属性值
+// ==/UserScript==</pre>
+
+<p>每一条属性必须使用双斜杠<code>//</code>开头，<b>不得</b>使用块注释<code>/*  */</code>。</p>
+<p>
+	与此同时，所有的脚本元数据必须放置于
+	<code>// ==UserScript==</code> 和 <code>// ==/UserScript==</code>
+	之间才会被认定为有效的元数据。
+</p>
+
+<p>元数据名和值中间可以为了保持美观添加多个空格。</p>
+
+<h3>值</h3>
+
+<tpl src="meta"
+     key="name"
+     code="测试用脚本">
+	<p>用于指示该脚本名称，将显示于「脚本管理」及「猴子菜单」。该值同时为相同命名空间的唯一识别码。</p>
+	<p>如果未指定该参数，将尝试从文件名获取。</p>
+</tpl>
+<tpl src="meta"
+	key="description"
+	code="This script even does the laundry!">
+	<p>简单描述当前脚本的功能。也会于用户脚本管理界面显示。</p>
+</tpl>
+<tpl src="meta"
+     key="namespace"
+     code="http://jixun.org/">
+	<p>命名空间和脚本名称是 GM 用于识别脚本唯一性的方法。如果两个脚本的名称和命名空间均相同，那么后安装的脚本将覆盖之前安装的脚本。</p>
+	<p>一般脚本作者将其项目使用相同命名空间，然后每个项目使用不同名称。</p>
+	<p>同时因为命名空间没有语法限制，一些作者直接使用项目首页作为其命名空间。该值只要不与他人重复即可。</p>
+</tpl>
+<tpl src="meta"
+     key="version"
+     code="1.0">
+	<p>指定脚本的版本号，GM 用来判断脚本是否更新的依据。</p>
+</tpl>
+
+<tpl src="meta"
+     key="require"
+     code="http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js">
+	<p>引用一个外部链接的脚本作为库使用。最常见的外部库为 jQuery。</p>
+	<p>因为 GM 对 IE 的支援不佳，因此一般不用考虑 IE 的兼容性，放心去搞吧~</p>
+</tpl>
+<tpl src="meta"
+     key="downloadURL"
+     code="https://www.example.com/myscript.user.js">
+	<p>* GM 的默认设定要求该值使用 <code>https://</code> 协议。</p>
+	<p>该值用于指定发现更新后使用的脚本地址。若未指定则使用安装脚本地址。</p>
+</tpl>
+<tpl src="meta"
+     key="updateURL"
+     code="https://www.example.com/myscript.meta.js">
+	<p>用于检查更新使用的地址。该地址应只包含元数据而不包含脚本内容。</p>
+</tpl>
+
+<tpl src="meta"
+     key="grant"
+	 code="GM_xmlhttpRequest">
+	<p>指定脚本所请求的权限，如 <code>unsafeWindow</code> 用于访问浏览器的 <code>window</code> 对象。</p>
+	<p>其它可选值则为 GM 提供的 <code>GM_</code> 开头的 API。</p>
+</tpl>
+<tpl src="meta"
+     key="include / @exclude">
+	<pre>// ==UserScript==
+// @include     http://www.example.com/foo/*
+// @include     http://www.example.org/*.bar
+// @exclude     http://www.example.com/foo/baz
+
+// GM 0.9.8 开始, @include 允许使用正则表达式匹配
+// @include     /^https?://www\.example\.com/.*$/
+// @include     /^http://www\.example\.(org|net)//
+// ==/UserScript==</pre>
+	<p><code>@include</code> 和 <code>@exclude</code> 使用 <code>*</code> 表示任意字符，或标准正则表达式对象。</p>
+	<p>同时，它还支持一个特殊的匹配符，<code>.tld</code>。</p>
+	<pre>@include http://www.example.tld/*</pre>
+	<p>请注意: 如果使用 tld 匹配请务必确保数据不会被泄露给无关网站。</p>
+	<p>其中， <code>@exclude</code> 的匹配权限比 <code>@include</code> 要高。</p>
+</tpl>
+<tpl src="meta"
+     key="match"
+     code="*://mail.google.com/*">
+	<p>GM 根据 Chrome 的 <a href="https://developer.chrome.com/extensions/match_patterns">Match Patterns</a> 实现的另外一种匹配方案，比 <code>@include / @exclude</code> 的匹配更严格。详细请参考上述 Chrome 开发者页面。</p>
+</tpl>
+
+<tpl src="meta"
+     key="icon"
+     code="http://www.example.org/icon.png">
+	<p>用于脚本管理界面显示的图标。虽然什么图片都可以，但建议使用 <code>32x32</code> 大小的图标。</p>
+</tpl>
+
+<tpl src="meta"
+     key="resource"
+     code="资源名 http://www.example.com/example.png">
+	<p>该参数可指定任意数量的资源。但请注意，同一脚本下资源名不得重复。</p>
+	<p>资源将在安装脚本的时候下载一次，之后不会进行更新。</p>
+	<p>这些资源可以稍后通过 <a ui-sref="doc({cat:'api',entry:'GM_getResourceURL'})">GM_getResourceURL</a> 或 <a ui-sref="doc({cat:'api',entry:'GM_getResourceText'})">GM_getResourceText</a> 获取其内容或地址。</p>
+	<div class="alert alert-info">自从 GM 0.9.0, 如果 GM 发现 <code>@resource</code> 的值被更改后将尝试重新下载。</div>
+</tpl>
+
+
+<tpl src="meta"
+     key="run-at"
+     code="document-end">
+	<p>该值用于指定脚本执行的时机，可用的参数只能为 <code>document-start</code> 和 <code>document-end</code> 两种。</p>
+	<p>Chrome 下的 TamperMonkey 还提供了 <a href="http://tampermonkey.net/documentation.php#@run-at" target="_blank">document-body</a> 这一选项，但是 GM 官方文档找不到说明，最好避免使用。</p>
+	<p>如果不填写该值，GM 将采用 <code>document-end</code> 作为默认值。</p>
+
+	<p>检查脚本是否执行于 <code>document-start</code>，检查 <a href="https://developer.mozilla.org/en/DOM/document.readyState#Summary" target="_blank">document.readyState</a> 的值即可:</p>
+	<pre class="sample sample-good">if ('loading' == document.readyState) {
+	alert("脚本执行于 document-start。");
+} else {
+	alert("脚本当前的 document.readyState: " + document.readyState);
+}</pre>
+</tpl>
+
+<tpl src="meta"
+     key="unwrap">
+	<p>该功能在 <a href="http://wiki.greasespot.net/Version_history#1.0_2" target="_blank">GM 1.0+ 已经被抛弃使用</a>，后期的 GM 默认启用该功能。</p>
+	<pre>// @unwrap</pre>
+	<p>该元数据表示代码将不会使用 <code>(function () { /* 代码 */ })();</code> 这样的形式执行，因此请注意不要在外部填写 <code>return</code> 语句。</p>
+</tpl>

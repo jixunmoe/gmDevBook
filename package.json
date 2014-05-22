@@ -1,0 +1,16 @@
+{
+  "name": "buildSite",
+  "description": "Build the site with minified css/html",
+  "version": "1.0.0",
+  "maintainers": [
+    {
+      "name": "Jixun",
+      "email": "jixun.moe@gmail.com",
+      "web": "http://jixun.org/"
+    }
+  ],
+  "dependencies": {
+    "clean-css": "~2.1.8",
+    "html-minifier": "~0.6.1"
+  }
+}

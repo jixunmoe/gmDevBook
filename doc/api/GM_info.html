@@ -1,0 +1,54 @@
+<h3>简介</h3>
+<p>和其它 API 不同，这是一个变量而非函数。</p>
+<p>该变量提供当前执行的用户脚本的元数据。</p>
+
+<h3>语法</h3>
+<pre>GM_info</pre>
+
+<h3>返回</h3>
+<p>该对象含有下述属性：</p>
+<dl>
+	<dt>script</dt>
+	<dd>一个包含当前脚本的 <a ui-sref="doc({cat:'tutorial',entry:'meta'})">元数据</a>。
+		<dl>
+			<dt>name</dt>
+			<dd>文本</dd>
+
+			<dt>namespace</dt>
+			<dd>可能为空文本。</dd>
+
+			<dt>description</dt>
+			<dd>可能为空文本。</dd>
+
+			<dt>run-at</dt>
+			<dd>文本</dd>
+
+			<dt>version</dt>
+			<dd>可能为空文本</dd>
+
+			<dt>includes</dt>
+			<dd>可能为空数组。</dd>
+
+			<dt>excludes</dt>
+			<dd>可能为空数组。</dd>
+
+			<dt>matches</dt>
+			<dd><code>@match</code>，可能为空数组 (0.9.16 下有问题)</dd>
+
+			<dt>resources</dt>
+			<dd>包含所有资源和其对应的地址的对象 (自 GM 1.2)。</dd>
+
+			<dt>unwrap</dt>
+			<dd>布尔型</dd>
+		</dl>
+	</dd>
+
+	<dt>scriptMetaStr</dt>
+	<dd>文本，元数据文本原文 (不含分隔符)</dd>
+
+	<dt>scriptWillUpdate</dt>
+	<dd>如果修改为 <code>true</code>，GM 将尝试自动更新脚本。</dd>
+
+	<dt>version</dt>
+	<dd>GM 版本。如 <code>0.9.16</code></dd>
+</dl>

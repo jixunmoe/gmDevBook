@@ -1,0 +1,4 @@
+<h3>沙盒环境</h3>
+<p>在最初的 GM 插件设计中，GM 脚本被直接插入到页面并提供了 GM_ 系列函数的访问权限。</p>
+<p>2005 年 7月，Mark Pilgrim 发现了 <a href="http://mozdev.org/pipermail/greasemonkey/2005-July/004022.html" target="_blank">一个安全漏洞</a> —— 运行 GM 脚本的网站可以直接调用 GM_ 系列函数。</p>
+<p>为了填补这一漏洞，GM 团队更改了设计理念，使用匿名函数包装脚本后执行，并提供 <code>unsafeWindow</code> 接口用于访问网页变量。</p>
