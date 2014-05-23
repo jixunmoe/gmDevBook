@@ -1,0 +1,146 @@
+<!DOCTYPE html> <html ng-app="gmDev"> <head> <title>{{entry}} - {{cat}} - GM 开发手册</title> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width,initial-scale=1"/> <meta name="author" content="Jixun"/> <meta name="description" content="Grease Monkey Tutorial"/> <meta name="keywords" content="Grease Monkey, Tutorial, User script, 教程, 用户脚本"/> <link rel="stylesheet" href="App.css"> <script src="App.js"></script>  <body> <div class="container"> <div class="row">  <div class="col-sm-3"> <div class="pa-sidebar well well-sm leftNav" ng-show="Nav"> <input ng-model="query" id="searchAPI" placeholder="快速搜寻 API" class="form-control"/> <div class="leftNavContainer"> <h3 ng-if="query">搜寻结果:</h3> <ul class="nav nav-pills nav-stacked" ng-repeat="nd in getKey(Nav)"> <li ng-if="Nav[nd].type!=0&&!query"><h4>{{ Nav[nd].title }}</h4></li> <li ng-if="Nav[nd].type!=2&&!query" ui-sref-active="active" ng-repeat="id in getKey(Nav[nd].entries)"> <a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{Nav[nd].entries[id]}}">{{Nav[nd].entries[id]}}</a> </li> <li ng-if="Nav[nd].type==2" ui-sref-active="active" ng-repeat="id in c=(Nav[nd].list|filter:query)"> <a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{id}}">{{id}}</a> </li> <li ng-if="Nav[nd].type==2&&query&&c">共找到 {{c.length}} 条结果。</li> <li class="text-muted" ng-if="Nav[nd].type==2&&query&&!c.length">看来找不到呢…更换关键字试试?</li> </ul> </div> </div> </div>  <div class="col-sm-9" id="viewpt"> <h1>{{cat}}<small class="text-ellipsis">/{{entry}}</small><span class="pull-right visible-md visible-lg">GM 开发手册</span></h1> <div class="panel panel-default"> <div class="panel-body" ui-view id="pageBody"></div> </div> </div> </div> </div> <script type="text/ng-template" id="tpl/api.html"><p>function <b>{{foo}} (</b> <span ng-if="!$have('args')">无参数</span> <span ng-repeat-start="arg in $split(args)" ng-repeat-end>{{$index?', ':''}}<i>{{arg}}</i></span> <b>)</b></p></script><script type="text/ng-template" id="tpl/arg.html"><dl class="count-arg"> <dt>{{ arg }} <span class="label label-primary" ng-if="$have('opt')">可选 <span ng-if="opt">({{opt}})</span></span> <dd> <div ng-if="type">类型: <code ng-if="type">{{ type }}</code></div> <div ng-bind-html="$content" class="text-indent reset-count-arg"></div>  </dl></script><script type="text/ng-template" id="tpl/define.html"><dt><span class="text-normal">项目: </span>{{term}} <span class="label label-primary" ng-if="$have('opt')">可选 <span ng-if="opt">({{opt}})</span></span> <dd> <div ng-if="type">类型: <code ng-if="type">{{ type }}</code></div> <div ng-bind-html="$content"></div></script><script type="text/ng-template" id="tpl/deprecated.html"><div class="alert alert-danger">函数 {{foo}} 已弃用，建议使用 <a href="{{url}}" target="_blank">{{replacement&&replacement||'原生 API'}}</a> 代替。</div></script><script type="text/ng-template" id="tpl/meta.html"><dl> <dt>@{{key}} <dd> <pre ng-if="code">// @{{key}} {{code}}</pre> <div ng-bind-html="$content"></div>  </dl></script><script type="text/ng-template" id="tpl/snipset/gmAddStyle.html"><p>不使用 API 实现该功能:</p> <pre>// 返回插入的 style 元素
+var myAddStyle = function (css) {
+	var ret = document.createElement ('style');
+	ret.textContent = css;
+	(document.head || document.getElementsByTagName ('head')[0]).appendChild (ret);
+	return ret;
+}</pre></script><script type="text/ng-template" id="tpl/snipset/gmValue.html"><p>储存、写入对象数据:</p> <pre>var GM_setObject = function (name, value) {
+	if (value instanceof Object) {
+		// 使用 JSON.stringify 将值转换为文本。
+		GM_setValue (name, JSON.stringify (value));
+	}
+},  GM_getObject = function (name, default) {
+	try {
+		return JSON.parse (GM_getValue (name, default) || '{}');
+	} catch (e) {
+		// 如果抓取的数据有误报错就直接返回默认值。
+		return default;
+	}
+};</pre> <p>抓取所有储存的数据至对象数组：</p> <pre>var getAllKey = function () {
+	var ret = {};
+	GM_listValues().map(function (thing) {
+		ret[thing] = GM_getValue (thing); // 值如果为对象数据需要手动调用 JSON.parse 解析。
+	});
+};</pre> <p>清空所有储存的数据：</p> <pre>GM_listValues().map(GM_deleteValue);</pre></script><script type="text/ng-template" id="doc/api/GM_addStyle.html"><h3>描述</h3> <p>该函数用于插入一段 CSS 到当前页面。它将插入一个新的 <code>&lt;style&gt;</code> 元素，添加输入的 CSS，然后插入到 <code>&lt;head&gt;</code> 末端。</p> <h3>语法</h3> <tpl src="api" foo="GM_addStyle" args="css"/> <tpl src="arg" arg="css" type="String"> 样式表的文本内容。 </tpl> <h3>例子</h3> <pre>GM_addStyle("body { color: white; background-color: black; } img { border: 0; }");</pre> <h3>笔记</h3> <ul> <li>添加 <code>!important</code> 到 CSS 末尾可强行覆盖其属性值。</li> <li>如有需要，可使用「多行文本」可能方便排版。</li> </ul> <h3>代码片断</h3> <tpl src="snipset/gmAddStyle"/></script><script type="text/ng-template" id="doc/api/GM_deleteValue.html"><h3>简介</h3> <p>该函数用于删除一个已经储存的值。</p> <p>如果你需要寻找如何设定值，请参见 <api>GM_setValue</api>。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" args="name"/> <tpl src="arg" arg="name" type="String"> 需要从脚本储存数据删除的值。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <p>删除一个叫做 foo 的值。</p> <pre>GM_deleteValue("foo");</pre> <p>删除指定数组外的数据外的值</p> <pre>var GM_removeAndKeep = function (arrKeysToKeep) {
+	if (!arrKeysToKeep instanceof Array)
+		// 不是合法的数组参数
+		return ;
+
+	GM_listValues().forEach (function (key) {
+		if (arrKeysToKeep.indexOf (key) == -1) {
+			// 不需要保留，删掉
+			GM_deleteValue (key);
+		}
+	});
+}；
+
+// 删除 config、cache 外的数据
+GM_removeAndKeep (['config', 'cache']);
+</pre> <h3>代码片断</h3> <tpl src="snipset/gmValue"/></script><script type="text/ng-template" id="doc/api/GM_getResourceText.html"><h3>描述</h3> <p>该函数用于获取定义的 <code>@resource</code> 的元属性值。</p> <h3>语法</h3> <tpl src="api" foo="GM_getResourceText" args="resourceName"/> <tpl src="arg" arg="resourceName" type="String"> 声明的资源名称。 </tpl> <h3>返回</h3> <p><code>String</code></p> <h3>异常</h3> <p>当资源不存在的时候将抛出异常。</p> <h3>例子</h3> <pre>// ==UserScript==
+// 首先定义一个资源
+// @resource prototype http://www.example.com/prototype.js
+// ==/UserScript==
+
+// 然后从这里获取资源地址
+var prototypeSource = GM_getResourceText("prototype");</pre> <h3>笔记</h3> <ul> <li>添加 <code>!important</code> 到 CSS 末尾可强行覆盖其属性值。</li> <li>如有需要，可使用「多行文本」可能方便排版。</li> </ul> <h3>代码片断</h3> <tpl src="snipset/gmAddStyle"/></script><script type="text/ng-template" id="doc/api/GM_getResourceURL.html"><h3>描述</h3> <p>该函数用于获取定义的 <code>@resource</code> 所指向的内容。</p> <h3>语法</h3> <tpl src="api" foo="GM_getResourceURL" args="resourceName"/> <tpl src="arg" arg="resourceName" type="String"> 声明的资源名称。 </tpl> <h3>返回</h3> <p><code>String</code></p> <pre>greasemonkey-script:[脚本唯一识别码]/[资源名]</pre> 如 <pre>greasemonkey-script:94242686-1400-4dce-982a-090cbfef7ba1/image</pre> <h3>Greasemonkey 1.0 的更改</h3> <p>现在返回的数据为 base64 编码的 <code>data:</code> 协议地址。</p> <p>该地址可以用于任何支援 <code>data:</code> 协议的地方 (如: 图片)，但是在 <code>&lt;object&gt;</code> 和 <code>&lt;object&gt;</code> 下无效。</p> <p>这个更新的原因是 Base64 编码的地址被在此编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code>。</p> <p>因此，你可能需要使用 <code>decodeURIComponent</code> 将取得的 Base64 还原一次。</p> <h3>异常</h3> <p>当资源不存在的时候将抛出异常。</p> <h3>例子</h3> <pre>// ==UserScript==
+// 首先定义一个资源
+// @resource logo http://www.example.com/logo.png
+// ==/UserScript==
+
+var img = document.createElement('img');
+// 将取得的地址作为图像地址并插入到页面
+img.src = GM_getResourceURL("logo");
+document.body.appendChild(img);</pre></script><script type="text/ng-template" id="doc/api/GM_getValue.html"><h3>描述</h3> <p>该函数用于获取脚本之前使用 <api>GM_setValue</api> 赋值储存的数据，可以为 <code>String</code>、<code>Boolean</code> 等类型。</p> <h3>语法</h3> <tpl src="api" foo="GM_addStyle" args="name,default"/> <tpl src="arg" arg="name" type="String"> 欲获取数据的名称。 </tpl> <tpl src="arg" arg="default" type="任意" opt="undefined"> 如果上述数据不存在时返回的值。 </tpl> <h3>返回</h3> <p>该函数将返回获取到的值，如果不存在则返回 <code>default</code> 传入的值。</p> <h3>例子</h3> <p>抓取一个叫做 foo 的储存值</p> <pre>// 输出储存为 foo 的值或 undefined
+
+GM_log(GM_getValue("foo")); </pre> <p>抓取一个叫做 'timezoneOffset' 的值并提供默认值:</p> <pre>// 如果该值不存在 GM_getValue() 则会返回 +8 (整数)
+
+GM_log(GM_getValue("timezoneOffset", +8));</pre> <h3>代码片断</h3> <tpl src="snipset/gmValue"/></script><script type="text/ng-template" id="doc/api/GM_info.html"><h3>简介</h3> <p>和其它 API 不同，这是一个变量而非函数。</p> <p>该变量提供当前执行的用户脚本的元数据。</p> <h3>语法</h3> <pre>GM_info</pre> <h3>返回</h3> <p>该对象含有下述属性：</p> <dl> <dt>script <dd>一个包含当前脚本的 <api cat="tutorial" entry="meta">元数据</api>。 <dl> <dt>name <dd>文本 <dt>namespace <dd>可能为空文本。 <dt>description <dd>可能为空文本。 <dt>run-at <dd>文本 <dt>version <dd>可能为空文本 <dt>includes <dd>可能为空数组。 <dt>excludes <dd>可能为空数组。 <dt>matches <dd><code>@match</code>，可能为空数组 (0.9.16 下有问题) <dt>resources <dd>包含所有资源和其对应的地址的对象 (自 GM 1.2)。 <dt>unwrap <dd>布尔型 </dl>  <dt>scriptMetaStr <dd>文本，元数据文本原文 (不含分隔符) <dt>scriptWillUpdate <dd>如果修改为 <code>true</code>，GM 将尝试自动更新脚本。 <dt>version <dd>GM 版本。如 <code>0.9.16</code> </dl></script><script type="text/ng-template" id="doc/api/GM_listValues.html"><h3>简介</h3> <p>该函数用于获取所有被赋值的值名，作为一个文本数组返回。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}"/> <h3>返回</h3> <p><code>Array</code>: 文本数组</p> <h3>例子</h3> <p>输出所有储存的值名</p> <pre>GM_log(GM_listValues());</pre></script><script type="text/ng-template" id="doc/api/GM_log.html"><tpl src="deprecated" foo="{{entry}}" replacement="Console 函数" url="https://developer.mozilla.org/en-US/docs/Web/API/console.log"/> <h3>描述</h3> <p>一个简单的日志函数，用于输出数据至控制台。按下键盘 <code>F12</code> 查看。</p> <p>输出数据将输出至「<abbr title="火狐已弃用该功能，使用 Ctrl+Shift+J 查看">错误控制台</abbr>」，包括所属脚本命名空间以及传入的文本。</p> <p>因此，下述脚本：</p> <pre>// ==UserScript==
+// @name          GM_log Example
+// @namespace     http://www.example.com/
+// ==/UserScript==
+
+GM_log("This is an example of GM_log");</pre> <p>将产生这样的输出：</p> <pre>http://www.example.com/GM_log Example: This is an example of GM_log</pre> <h3>语法</h3> <tpl src="api" foo="GM_log" args="message"/> <tpl src="arg" arg="message" type="String"> 用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <pre>GM_log("Hello, World!");
+GM_log("Warning, " + someInputField.value + "!");</pre></script><script type="text/ng-template" id="doc/api/GM_openInTab.html"><h3>描述</h3> <p>在新标签页开启指定地址。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" args="url"/> <tpl src="arg" arg="url" type="String"> 用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。 </tpl> <h3>返回</h3> <p>0.8.2 之前: <code>undefined</code><br/> 0.8.2 之后: 新标签的 <code>window</code> 对象</p> <h3>例子</h3> <pre>GM_openInTab("http://www.example.com/");</pre></script><script type="text/ng-template" id="doc/api/GM_registerMenuCommand.html"><h3>简介</h3> <p>该函数允许用户脚本添加菜单到用户脚本指令。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" arg="caption,commandFunc,accessKey"/> <tpl src="arg" arg="caption" type="String"> 用于显示的项目标题。 </tpl> <tpl src="arg" arg="commandFunc" type="Function"> 单击菜单后执行的回调。 </tpl> <tpl src="arg" arg="accessKey" type="String"> 菜单界面的热键；一个单子节符号，一般为项目标题中的一个字 (<a href="https://developer.mozilla.org/en/XUL/Attribute/accesskey" target="_blank">MDN</a>)。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <pre>GM_registerMenuCommand("Hello, world (simple)", function () {
+	/// ...
+});
+
+var yooooo = function () {
+	// ...
+};
+GM_registerMenuCommand("Hello, world!", yooooo, "h");
+</pre></script><script type="text/ng-template" id="doc/api/GM_setClipboard.html"><h3>简介</h3> <p>更改当前剪切版内容为参数内容。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" args="text"/> <tpl src="arg" arg="text" type="String"> 任意文本。 </tpl> <h3>例子</h3> <pre>GM_setClipboard('http://www.example.com/short-url-code');</pre></script><script type="text/ng-template" id="doc/api/GM_setValue.html"><h3>描述</h3> <p>该函数用于写入一些数据并储存，可使用 <api>GM_getValue</api> 获取储存的数据。<code>String</code>、<code>Boolean</code> 等类型。</p> <h3>语法</h3> <tpl src="api" foo="GM_setValue" args="name,value"/> <tpl src="arg" arg="name" type="String"> 欲写入数据的名称。 </tpl> <tpl src="arg" arg="value" type="String, Integer, Boolean"> 欲写入数据的内容。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <p>将名为 <code>foo</code> 的项目储存为 <code>bar</code></p> <pre>GM_setValue("foo", "bar");</pre> <h3>代码片断</h3> <tpl src="snipset/gmValue"/></script><script type="text/ng-template" id="doc/api/GM_xmlhttpRequest.html"><h3>描述</h3> <p>该函数主要用于实现跨域传输信息调用，如从 <code>www.example.com</code> 请求 <code>upload.example.com</code> 的内容。</p> <h3>语法</h3> <tpl src="api" foo="GM_xmlhttpRequest" args="details"/> <tpl src="arg" arg="details" type="Object"> </tpl> <dl> <tpl src="define" term="method" type="String"> <p class="no-margin">请求方式，最常见的有 <code>GET</code> 与 <code>POST</code> 两种。</p> <p>也有其它的请求方式，详细请翻阅 <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.2" target="_blank">w3 标准</a>。</p> </tpl> <tpl src="define" term="url" type="String"> 请求访问的地址。 </tpl> <tpl src="define" term="binary" type="Boolean" opt> 默认为 <code>false</code>。当为 <code>true</code> 的时候将使用 <code>.sendAsBinary()</code> 方法。 </tpl> <tpl src="define" term="context" type="Object" opt> 任意对象。搞对象同时将为 Response 对象的 <code>context</code>。 </tpl> <tpl src="define" term="data" type="String" opt> 提交给网页的数据，一般为 POST 操作。 </tpl> <tpl src="define" term="headers" type="Object" opt> 提交给网页使用的 HTTP 头部数据。 </tpl> <tpl src="define" term="user" type="String" opt> 提交给网站的用户名 </tpl> <tpl src="define" term="password" type="String" opt> 提交给网站的密码 (详细: <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">基础用户验证</a>)。 </tpl> <tpl src="define" term="synchronous" type="Boolean" opt> 当该值为 <code>true</code> 时，请求结束前将导致浏览器界面无项应。该模式下返回值即为返回数据。 </tpl> <tpl src="define" term="timeout" type="Integer" opt> 超过指定数字的毫秒数后强行结束网页请求。 </tpl> <tpl src="define" term="upload" type="Object" opt> 包含了 <code>onabort</code>、<code>onerror</code>、<code>onload</code>、<code>onprogress</code> 这四个上传回调函数的对象。 </tpl> <tpl src="define" term="overrideMimeType" type="String" opt> 用于指定请求页面的元数据，如 <code>text/html; charset=GBK</code> </tpl> <hr/> <dt>回调参数 <dd> <p>回调参数将会被传入一个参数，请参考下方的「请求对象」。</p> <p>可用的回调参数:</p> <ul> <li><i>onabort</i> 断开操作时的回调</li> <li><i>onerror</i> 请求出错时的回调</li> <li><i>onload</i> 请求完毕后时的回调</li> <li><i>onprogress</i> 请求进度更换时的回调</li> <li><i>onreadystatechange</i> 准备状态切换时的回调</li> <li><i>ontimeout</i> 请求超时时的回调</li> </ul>  </dl> <h3>请求对象</h3> <p>所有的回调参数调用时都会传入一个变量。根据回调的不同，下述数据可能不全部可用。</p> <ul> <li><i>readyState</i> 准备状态</li> <li><i>responseHeaders</i> 请求页面的头部信息</li> <li><i>responseText</i> 请求的页面内容</li> <li><i>status</i> 请求页面的状态，如 <code>404</code></li> <li><i>statusText</i> 请求页面的内容，如 <code>404 Not Found</code></li> </ul> <p>其中，GM 还引用了自己独有的属性值:</p> <div class="reset-count-arg"> <tpl src="arg" arg="context" type="Object"> 使用 API 时传入的 <code>context</code> 属性。 </tpl> <tpl src="arg" arg="finalUrl" type="String"> 获取跳转后的链接地址。 </tpl> </div> <p>而针对 <code>progress</code> 的进度回调，传参包含下述属性:</p> <ul> <li>lengthComputable</li> <li>loaded</li> <li>total</li> </ul> <h3>返回</h3> <p>在默认(异步请求, asynchronous)请求方式下，将返回一个带有 <code>abort()</code> 方法的对象。</p> <p>在同步请求方式下，将返回一个带有 <code>abort()</code> 及下述属性的对象：</p> <ul> <li>finalUrl</li> <li>readyState</li> <li>responseHeaders</li> <li>responseText</li> <li>status</li> <li>statusText</li> </ul> <h3>例子</h3> <h4>最基础的调用</h4> <pre class="sample">GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://www.example.com/",
+	onload: function(response) {
+		alert(response.responseText);
+	}
+});</pre> <h4>GET 调用</h4> <pre class="sample">GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://www.example.net/",
+	headers: {
+		"User-Agent": "Mozilla/5.0",    // 如果未指定则使用浏览器默认值.
+		"Accept": "text/xml"            // 如果未指定则教给浏览器自行判断
+	},
+	onload: function(response) {
+		var responseXML = null;
+		// 插入 responseXML 到现有对象 (仅限于 XML 对象)
+		if (!response.responseXML) {
+			responseXML = new DOMParser()
+				.parseFromString(response.responseText, "text/xml");
+		}
+
+		GM_log([
+			response.status,
+			response.statusText,
+			response.readyState,
+			response.responseHeaders,
+			response.responseText,
+			response.finalUrl,
+			responseXML
+		].join("\n"));
+	}
+});</pre> <h4>POST 请求</h4> <p>当发出 POST 请求时，<b>大多数网站</b>都要求 <code>Content-Type</code> 头部设定为 <code>application/x-www-form-urlencoded</code> 才允许提交。</p> <pre class="sample">GM_xmlhttpRequest({
+	method: "POST",
+	url: "http://www.example.net/login",
+	data: "username=johndoe&password=xyz123",
+	headers: {
+		"Content-Type": "application/x-www-form-urlencoded"
+	},
+	onload: function(response) {
+		if (response.responseText.indexOf("Logged in as") > -1) {
+			location.href = "http://www.example.net/dashboard";
+		}
+	}
+});</pre> <h4>HEAD 请求</h4>  <p>如同 HTTP 的定义，你可以发出一个 HEAD 请求只获取网页的头部信息。</p> <pre class="sample">GM_xmlhttpRequest({
+	url: "http://www.example.com",
+	method: "HEAD",
+	onload: function(response) {
+		GM_log(response.responseHeaders);
+	}
+});</pre></script><script type="text/ng-template" id="doc/intro/about.html"><h2>关于该项目</h2> <p>这是一个很有爱的中文 GreaseMonkey 用户脚本开发手册，托管于 <a href="https://github.com/JixunMoe/gmDevBook">GitHub</a> :3</p> <p>该项目使用下述开源库进行开发，在此表示感谢：</p> <ul> <li><a href="https://angularjs.org/" target="_blank">Angular JS</a></li> <li><a href="https://angular-ui.github.io/" target="_blank">Angular UI</a></li> <li><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a></li> <li><a href="https://jquery.com/" target="_blank">jQuery</a></li> </ul> <p>该项目于 <a href="http://firefox8.qiniudn.com/doc/index.html">Firefox8</a> 获得灵感制作而成，其中 API 资料均从 <a href="http://wiki.greasespot.net/" target="_blank">GM 官方百科</a>提取翻译而成。</p></script><script type="text/ng-template" id="doc/intro/gmScript.html"><p>从原理上来说，GreaseMonkey(GM) 脚本相当于在网页上插入一段 JavaScript(JS) 脚本。</p> <p>因此，它的编写语言本质上就是 JS。JS 所能实现的功能，GM 脚本都能实现。但 GM 它的强大并不限与此，还能实现如<a ui-sref="doc({cat:'api',entry:'GM_xmlhttpRequest'})">跨域请求</a>、<a ui-sref="doc({cat:'api',entry:'GM_setClipboard'})">更改剪辑版</a>等原生 JS 无法实现的功能。</p> <div class="alert alert-info"> <h3>该文档不包含 JS 的编写教程</h3> <p>您可以通过参阅 <a ui-sref="doc({cat:'tutorial',entry:'other'})">其它资料</a> 或 <a href="http://tieba.baidu.com/firefox" target="_blank">询问他人</a> 获取帮助。</p> </div></script><script type="text/ng-template" id="doc/tutorial/meta.html"><h3>描述</h3> <p><b>元数据</b> 包含了用户脚本的元数据。一般包含脚本名称、命名空间、执行地址和不执行的地址。</p> <p>这些数据一般为 JavaScript 注释形式储存于脚本顶部。</p> <h3>例子</h3> <pre>// ==UserScript==
+// @name          我的第一个脚本
+// @namespace     http://www.example.com/gmscripts
+// @description   看我突破天际的钻头
+// @include       http://www.example.com/*
+// @include       http://www.example.org/*
+// @exclude       http://www.example.org/foo
+// @require       https://example.com/foo.js
+// @resource      logo logo.png
+// @resource      yooo http://www.example.com/resource2.png
+// @version       1.0
+// @icon          http://www.example.net/icon.png
+// ==/UserScript==</pre> <h3>语法</h3> <p>元数据必须按照以下格式填写</p> <pre>// ==UserScript==
+// @属性名 属性值
+// ==/UserScript==</pre> <p>每一条属性必须使用双斜杠<code>//</code>开头，<b>不得</b>使用块注释<code>/* */</code>。</p> <p> 与此同时，所有的脚本元数据必须放置于 <code>// ==UserScript==</code> 和 <code>// ==/UserScript==</code> 之间才会被认定为有效的元数据。 </p> <p>元数据名和值中间可以为了保持美观添加多个空格。</p> <h3>值</h3> <tpl src="meta" key="name" code="测试用脚本"> <p>用于指示该脚本名称，将显示于「脚本管理」及「猴子菜单」。该值同时为相同命名空间的唯一识别码。</p> <p>如果未指定该参数，将尝试从文件名获取。</p> </tpl> <tpl src="meta" key="description" code="This script even does the laundry!"> <p>简单描述当前脚本的功能。也会于用户脚本管理界面显示。</p> </tpl> <tpl src="meta" key="namespace" code="http://jixun.org/"> <p>命名空间和脚本名称是 GM 用于识别脚本唯一性的方法。如果两个脚本的名称和命名空间均相同，那么后安装的脚本将覆盖之前安装的脚本。</p> <p>一般脚本作者将其项目使用相同命名空间，然后每个项目使用不同名称。</p> <p>同时因为命名空间没有语法限制，一些作者直接使用项目首页作为其命名空间。该值只要不与他人重复即可。</p> </tpl> <tpl src="meta" key="version" code="1.0"> <p>指定脚本的版本号，GM 用来判断脚本是否更新的依据。</p> </tpl> <tpl src="meta" key="require" code="http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"> <p>引用一个外部链接的脚本作为库使用。最常见的外部库为 jQuery。</p> <p>因为 GM 对 IE 的支援不佳，因此一般不用考虑 IE 的兼容性，放心去搞吧~</p> </tpl> <tpl src="meta" key="downloadURL" code="https://www.example.com/myscript.user.js"> <p>* GM 的默认设定要求该值使用 <code>https://</code> 协议。</p> <p>该值用于指定发现更新后使用的脚本地址。若未指定则使用安装脚本地址。</p> </tpl> <tpl src="meta" key="updateURL" code="https://www.example.com/myscript.meta.js"> <p>用于检查更新使用的地址。该地址应只包含元数据而不包含脚本内容。</p> </tpl> <tpl src="meta" key="grant" code="GM_xmlhttpRequest"> <p>指定脚本所请求的权限，如 <code>unsafeWindow</code> 用于访问浏览器的 <code>window</code> 对象。</p> <p>其它可选值则为 GM 提供的 <code>GM_</code> 开头的 API。</p> </tpl> <tpl src="meta" key="include / @exclude"> <pre>// ==UserScript==
+// @include     http://www.example.com/foo/*
+// @include     http://www.example.org/*.bar
+// @exclude     http://www.example.com/foo/baz
+
+// GM 0.9.8 开始, @include 允许使用正则表达式匹配
+// @include     /^https?://www\.example\.com/.*$/
+// @include     /^http://www\.example\.(org|net)//
+// ==/UserScript==</pre> <p><code>@include</code> 和 <code>@exclude</code> 使用 <code>*</code> 表示任意字符，或标准正则表达式对象。</p> <p>同时，它还支持一个特殊的匹配符，<code>.tld</code>。</p> <pre>@include http://www.example.tld/*</pre> <p>请注意: 如果使用 tld 匹配请务必确保数据不会被泄露给无关网站。</p> <p>其中， <code>@exclude</code> 的匹配权限比 <code>@include</code> 要高。</p> </tpl> <tpl src="meta" key="match" code="*://mail.google.com/*"> <p>GM 根据 Chrome 的 <a href="https://developer.chrome.com/extensions/match_patterns">Match Patterns</a> 实现的另外一种匹配方案，比 <code>@include / @exclude</code> 的匹配更严格。详细请参考上述 Chrome 开发者页面。</p> </tpl> <tpl src="meta" key="icon" code="http://www.example.org/icon.png"> <p>用于脚本管理界面显示的图标。虽然什么图片都可以，但建议使用 <code>32x32</code> 大小的图标。</p> </tpl> <tpl src="meta" key="resource" code="资源名 http://www.example.com/example.png"> <p>该参数可指定任意数量的资源。但请注意，同一脚本下资源名不得重复。</p> <p>资源将在安装脚本的时候下载一次，之后不会进行更新。</p> <p>这些资源可以稍后通过 <api>GM_getResourceURL</api> 或 <api>GM_getResourceText</api> 获取其内容或地址。</p> <div class="alert alert-info">自从 GM 0.9.0, 如果 GM 发现 <code>@resource</code> 的值被更改后将尝试重新下载。</div> </tpl> <tpl src="meta" key="run-at" code="document-end"> <p>该值用于指定脚本执行的时机，可用的参数只能为 <code>document-start</code> 和 <code>document-end</code> 两种。</p> <p>Chrome 下的 TamperMonkey 还提供了 <a href="http://tampermonkey.net/documentation.php#@run-at" target="_blank">document-body</a> 这一选项，但是 GM 官方文档找不到说明，最好避免使用。</p> <p>如果不填写该值，GM 将采用 <code>document-end</code> 作为默认值。</p> <p>检查脚本是否执行于 <code>document-start</code>，检查 <a href="https://developer.mozilla.org/en/DOM/document.readyState#Summary" target="_blank">document.readyState</a> 的值即可:</p> <pre class="sample sample-good">if ('loading' == document.readyState) {
+	alert("脚本执行于 document-start。");
+} else {
+	alert("脚本当前的 document.readyState: " + document.readyState);
+}</pre> </tpl> <tpl src="meta" key="unwrap"> <p>该功能在 <a href="http://wiki.greasespot.net/Version_history#1.0_2" target="_blank">GM 1.0+ 已经被抛弃使用</a>，后期的 GM 默认启用该功能。</p> <pre>// @unwrap</pre> <p>该元数据表示代码将不会使用 <code>(function () { /* 代码 */ })();</code> 这样的形式执行，因此请注意不要在外部填写 <code>return</code> 语句。</p> </tpl></script><script type="text/ng-template" id="doc/tutorial/other.html"><h3>JS 开发</h3> <div class="list-group"> <a class="list-group-item" href="https://developer.mozilla.org/zh-TW/docs/JavaScript#.E6.96.87.E4.BB.B6">謀智開發者社區 (MDN)</a> <a class="list-group-item" href="http://devdocs.io/javascript/">DevDocs</a> <a class="list-group-item" href="http://docs.webplatform.org/wiki/javascript">Web Platform 文庫</a> </div> <h3>CSS 样式</h3> <div class="list-group"> <a class="list-group-item" href="https://developer.mozilla.org/zh-TW/docs/CSS">謀智開發者社區 (MDN)</a> <a class="list-group-item" href="http://devdocs.io/css/">DevDocs</a> <a class="list-group-item" href="http://docs.webplatform.org/wiki/css">Web Platform 文庫</a> </div> <h3>jQuery 手册</h3> <div class="list-group"> <a class="list-group-item" href="http://api.jquery.com/">jQuery</a> <a class="list-group-item" href="http://devdocs.io/jquery/">DevDocs</a> </div> <h3>为什么不推荐 W3School 作为学习资料? (<a href="http://www.w3fools.com/" rel="no-follow">全文</a>)</h3> <p>简单来说有以下几点：</p> <ol> <li>资料更新缓慢，而且没有社区帮忙维护</li> <li>参考资料来源不准确导致开发者浪费时间</li> <li>HTML5 一直都在进步，而 W3School 一直都是陈旧的例子用法。</li> <li>最后: W3School 和 W3C 没有任何从属关系 <sup>(<a href="http://lists.w3.org/Archives/Public/www-validator/2010Jan/0026.html">来源</a>)</sup>。</li> </ol></script><script type="text/ng-template" id="doc/tutorial/publish.html"><h3>Gist</h3> <p><a href="https://gist.github.com/">https://gist.github.com/</a></p> <p>Gist 是 GitHub 提供的代码分享服务。Gist 文件可以重命名为 <code>.user.js</code> 结尾，并通过分享「Raw Link」实现一键安装脚本。</p> <p>该站默认使用 HTTPS 协议。</p> <h3>Greasy Fork</h3> <p><a href="https://greasyfork.org/">https://greasyfork.org/</a></p> <p>由 <a href="http://userstyles.org/">UserStyles</a> 维护者开发，默认使用 HTTPS 协议。</p> <p>其网站源码托管于 <a href="https://github.com/JasonBarnabe/greasyfork">GitHub</a>。</p> <h3>OpenUserJS.org</h3> <p><a href="https://openuserjs.org/">https://openuserjs.org/</a></p> <p>「一个使用 Node.js 构建的用户脚本源」。仅限 HTTPS 协议，其网站源码也托管于 <a href="https://github.com/OpenUserJs/OpenUserJS.org">GitHub</a>。</p> <h3>MonkeyGuts</h3> <p><a href="https://monkeyguts.com/">https://monkeyguts.com/</a></p> <p>「Monkey Guts 是一个全新的脚本源」。仅限 HTTPS 协议，网站目前处于闭源状态。</p> <h3>UserScripts.org</h3> <p><a href="https://userscripts.org/">https://userscripts.org/</a></p> <p>规模最大以及运行时间最长的用户脚本托管站点。HTTPS 可用但默认未启用。从 2014 年开始，因年久是修导致关站。</p> <h3>全网络</h3> <p>只要你的地址结尾为 <code>.user.js</code> 并能正常访问就能使用 GM 一键安装了。</p></script><script type="text/ng-template" id="doc/tutorial/warning.html"><h3>沙盒环境</h3> <p>在最初的 GM 插件设计中，GM 脚本被直接插入到页面并提供了 GM_ 系列函数的访问权限。</p> <p>2005 年 7月，Mark Pilgrim 发现了 <a href="http://mozdev.org/pipermail/greasemonkey/2005-July/004022.html" target="_blank">一个安全漏洞</a> —— 运行 GM 脚本的网站可以直接调用 GM_ 系列函数。</p> <p>为了填补这一漏洞，GM 团队更改了设计理念，使用匿名函数包装脚本后执行，并提供 <code>unsafeWindow</code> 接口用于访问网页变量。</p></script>  
