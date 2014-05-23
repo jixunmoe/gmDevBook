@@ -10,20 +10,21 @@
 	<meta name="keywords" content="Grease Monkey, Tutorial, User script, 教程, 用户脚本" />
 
 	<!--CSS:START-->
-	<link rel="stylesheet" href="cdn/angular-ui.min.css">
-	<link rel="stylesheet" href="cdn/bootstrap.min.css">
+	<link rel="stylesheet" href="cdn/angular-ui/build/angular-ui.min.css">
+	<link rel="stylesheet" href="cdn/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="res/App.css">
 	<!--CSS:END-->
 
 
 	<!--JS:START-->
-	<script src="cdn/jquery.min.js"></script>
+	<script src="cdn/jquery/dist/jquery.min.js"></script>
+	<script src="cdn/jquery.scrollTo/jquery.scrollTo.min.js"></script>
 
 	<!-- Angular 库 -->
-	<script src="cdn/angular.js"></script>
-	<script src="cdn/angular-ui.min.js"></script>
-	<script src="cdn/angular-ui-router.min.js"></script>
-	<script src="cdn/ui-bootstrap.min.js"></script>
+	<script src="cdn/angular/angular.min.js"></script>
+	<script src="cdn/angular-ui/build/angular-ui.min.js"></script>
+	<script src="cdn/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<!-- <script src="cdn/ui-bootstrap.min.js"></script> -->
 
 	<script src="res/App.js"></script>
 	<!--JS:END-->
@@ -36,28 +37,30 @@
 		<div class="col-sm-3">
 			<div class="pa-sidebar well well-sm leftNav" ng-show="Nav">
 				<input ng-model="query" id="searchAPI" placeholder="快速搜寻 API" class="form-control"/>
+				<div class="leftNavContainer">
+					<h3 ng-if="query">搜寻结果:</h3>
 
-				<h3 ng-if="query">搜寻结果:</h3>
+					<ul class="nav nav-pills nav-stacked" ng-repeat="nd in getKey(Nav)">
+						<li ng-if="Nav[nd].type!=0&&!query"><h4>{{ Nav[nd].title }}</h4></li>
 
-				<ul class="nav nav-pills nav-stacked" ng-repeat="nd in getKey(Nav)">
-					<li ng-if="Nav[nd].type!=0&&!query"><h4>{{ Nav[nd].title }}</h4></li>
+						<li ng-if="Nav[nd].type!=2&&!query" ui-sref-active="active" ng-repeat="id in getKey(Nav[nd].entries)">
+							<a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{Nav[nd].entries[id]}}">{{Nav[nd].entries[id]}}</a>
+						</li>
+						<li ng-if="Nav[nd].type==2" ui-sref-active="active" ng-repeat="id in c=(Nav[nd].list|filter:query)">
+							<a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{id}}">{{id}}</a>
+						</li>
+						<li ng-if="Nav[nd].type==2&&query&&c">共找到 {{c.length}} 条结果。</li>
+						<li class="text-muted" ng-if="Nav[nd].type==2&&query&&!c.length">看来找不到呢…更换关键字试试?</li>
+					</ul>
 
-					<li ng-if="Nav[nd].type!=2&&!query" ui-sref-active="active" ng-repeat="id in getKey(Nav[nd].entries)">
-						<a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{Nav[nd].entries[id]}}">{{Nav[nd].entries[id]}}</a>
-					</li>
-					<li ng-if="Nav[nd].type==2" ui-sref-active="active" ng-repeat="id in c=(Nav[nd].list|filter:query)">
-						<a class="text-ellipsis" ui-sref="doc({cat:nd,entry:id})" title="{{Nav[nd].title}}:{{id}}">{{id}}</a>
-					</li>
-					<li ng-if="Nav[nd].type==2&&query&&c">共找到 {{c.length}} 条结果。</li>
-					<li class="text-muted" ng-if="Nav[nd].type==2&&query&&!c.length">看来找不到呢…更换关键字试试?</li>
-				</ul>
+				</div>
 
 			</div>
 		</div>
 
 		<!-- 右侧正文 -->
-		<div class="col-sm-9">
-			<h1>{{cat}}<small>/{{entry}}</small><span class="pull-right visible-md visible-lg">GM 开发手册</span></h1>
+		<div class="col-sm-9" id="viewpt">
+			<h1>{{cat}}<small class="text-ellipsis">/{{entry}}</small><span class="pull-right visible-md visible-lg">GM 开发手册</span></h1>
 
 			<div class="panel panel-default">
 				<div class="panel-body" ui-view id="pageBody"></div>

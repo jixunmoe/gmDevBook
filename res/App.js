@@ -3,11 +3,11 @@
  */
 /* global angular */
 
-(function (window, Angular, $, $q, $scope, $state, $global) {
+(function (window, Angular, $, _, $q, $scope, $state, $global) {
 	'use strict';
 
 	Angular
-		.module ('gmDev', ['ui.router', 'ui.bootstrap'])
+		.module ('gmDev', ['ui.router'])
 		.directive ('api', ['$state', function ($state) {
 			return {
 				transclude: true,
@@ -49,8 +49,8 @@
 				}],
 				link: function(scope, element, attrs) {
 					scope.$split = function (str, what) {
-						console.log (str);
-						return str.split(what || ',');
+						if (str)
+							return str.split(what || ',');
 					};
 					scope.$have = function (what) {
 						return attrs.hasOwnProperty(what);
@@ -71,10 +71,10 @@
 			var Nav = $global.Nav = {
 				intro: {
 					type: 0, // Hide Title
-					title: '简介',
+					title: '帮助',
 					entries: {
-						gmScript: '用户脚本',
-						about: '关于'
+						gmScript: '关于用户脚本',
+						about: '关于该项目'
 					}
 				},
 				tutorial: {
@@ -130,7 +130,7 @@
 				}
 
 				// Scroll page to the top.
-				window.scrollTo (0,0);
+				$(window).scrollTo (_('viewpt'), 800);
 			});
 		}]).config (['$stateProvider', '$urlRouterProvider', function ($stateProv, $urlRouterProvider) {
 			$urlRouterProvider.when ('', '/doc/intro/gmScript');
@@ -144,4 +144,6 @@
 		}]);
 
 
-}) (window, angular, jQuery, '$q', '$scope', '$state', '$rootScope');
+}) (window, angular, jQuery, function ($) {
+	return document.getElementById($);
+}, '$q', '$scope', '$state', '$rootScope');

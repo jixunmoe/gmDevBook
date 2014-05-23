@@ -22,8 +22,33 @@ body {
 	text-overflow: ellipsis;
 }
 
-.panel-body > h3:first-child {
-	margin-top: 0;
+.panel-body {
+	pre{
+		&:hover::after {
+			color: #479BEC;
+			opacity: .5;
+		}
+
+		&::after {
+			content: '# 代码';
+			float: right;
+			color: #0C70E8;
+			transition: all .5s;
+		}
+	}
+	> h3 {
+		border-bottom: 1px dashed #ccc;
+
+		&:first-child {
+			margin-top: 0;
+		}
+
+		&:hover::after {
+			color: #ccc;
+			padding-left: .5em;
+			content: '¶';
+		}
+	}
 }
 
 pre {
@@ -61,12 +86,24 @@ dd > dl {
 
 @media (min-width: 768px) {
 	.leftNav {
-		overflow-y: auto;
 		height: auto;
 		position: fixed;
 		top: -1px;
 		bottom: 0;
 		margin-bottom: -1px;
+		padding-top: 50px;
+		> .leftNavContainer {
+			overflow-y: auto;
+			height: 100%;
+		}
+	}
+
+	#searchAPI {
+		// margin-bottom: .5em;
+		position: fixed;
+		width: initial;
+		z-index: 9;
+		top: .5em;
 	}
 }
 
@@ -87,10 +124,6 @@ dd > dl {
 	}
 }
 
-
-#searchAPI {
-	margin-bottom: .5em;
-}
 
 .text-indent {
 	text-indent: 2em;

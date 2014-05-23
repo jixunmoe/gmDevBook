@@ -1,0 +1,41 @@
+<h3>描述</h3>
+<p>该函数用于获取定义的 <code>@resource</code> 所指向的内容。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+     foo="GM_getResourceURL"
+     args="resourceName"
+		/>
+
+<tpl src="arg"
+     arg="resourceName"
+     type="String">
+	声明的资源名称。
+</tpl>
+
+<h3>返回</h3>
+<p><code>String</code></p>
+<pre>greasemonkey-script:[脚本唯一识别码]/[资源名]</pre>
+如
+<pre>greasemonkey-script:94242686-1400-4dce-982a-090cbfef7ba1/image</pre>
+
+
+<h3>Greasemonkey 1.0 的更改</h3>
+<p>现在返回的数据为 base64 编码的 <code>data:</code> 协议地址。</p>
+<p>该地址可以用于任何支援 <code>data:</code> 协议的地方 (如: 图片)，但是在 <code>&lt;object&gt;</code> 和 <code>&lt;object&gt;</code> 下无效。</p>
+<p>这个更新的原因是 Base64 编码的地址被在此编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code>。</p>
+<p>因此，你可能需要使用 <code>decodeURIComponent</code> 将取得的 Base64 还原一次。</p>
+
+<h3>异常</h3>
+<p>当资源不存在的时候将抛出异常。</p>
+
+<h3>例子</h3>
+<pre>// ==UserScript==
+// 首先定义一个资源
+// @resource logo http://www.example.com/logo.png
+// ==/UserScript==
+
+var img = document.createElement('img');
+// 将取得的地址作为图像地址并插入到页面
+img.src = GM_getResourceURL("logo");
+document.body.appendChild(img);</pre>

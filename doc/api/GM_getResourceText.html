@@ -1,0 +1,38 @@
+<h3>描述</h3>
+<p>该函数用于获取定义的 <code>@resource</code> 的元属性值。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+     foo="GM_getResourceText"
+     args="resourceName"
+		/>
+
+<tpl src="arg"
+     arg="resourceName"
+     type="String">
+	声明的资源名称。
+</tpl>
+
+<h3>返回</h3>
+<p><code>String</code></p>
+
+<h3>异常</h3>
+<p>当资源不存在的时候将抛出异常。</p>
+
+<h3>例子</h3>
+<pre>// ==UserScript==
+// 首先定义一个资源
+// @resource prototype http://www.example.com/prototype.js
+// ==/UserScript==
+
+// 然后从这里获取资源地址
+var prototypeSource = GM_getResourceText("prototype");</pre>
+
+<h3>笔记</h3>
+<ul>
+	<li>添加 <code>!important</code> 到 CSS 末尾可强行覆盖其属性值。</li>
+	<li>如有需要，可使用「多行文本」可能方便排版。</li>
+</ul>
+
+<h3>代码片断</h3>
+<tpl src="snipset/gmAddStyle" />

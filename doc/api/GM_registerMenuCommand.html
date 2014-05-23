@@ -1,0 +1,38 @@
+<h3>简介</h3>
+<p>该函数允许用户脚本添加菜单到用户脚本指令。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+     foo="{{entry}}"
+     arg="caption,commandFunc,accessKey"
+/>
+
+<tpl src="arg"
+     arg="caption"
+     type="String">
+	用于显示的项目标题。
+</tpl>
+<tpl src="arg"
+     arg="commandFunc"
+     type="Function">
+	单击菜单后执行的回调。
+</tpl>
+<tpl src="arg"
+     arg="accessKey"
+     type="String">
+	菜单界面的热键；一个单子节符号，一般为项目标题中的一个字 (<a href="https://developer.mozilla.org/en/XUL/Attribute/accesskey" target="_blank">MDN</a>)。
+</tpl>
+
+<h3>返回</h3>
+<p><code>undefined</code></p>
+
+<h3>例子</h3>
+<pre>GM_registerMenuCommand("Hello, world (simple)", function () {
+	/// ...
+});
+
+var yooooo = function () {
+	// ...
+};
+GM_registerMenuCommand("Hello, world!", yooooo, "h");
+</pre>
