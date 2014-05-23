@@ -1,4 +1,5 @@
 all:
+	sass --scss --style compressed --no-cache res/App.scss res/App.css
 	-mkdir build
 	nodejs build.js
 	# 压缩脚本, 详细日志请参考 build.log

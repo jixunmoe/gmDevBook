@@ -112,7 +112,7 @@
 				return Object.keys(o);
 			};
 
-			$global.$on('$stateChangeSuccess', function (e, curRoute, $param) {
+			$global.$on('$stateChangeStart', function (e, curRoute, $param) {
 				if (!Nav.hasOwnProperty($param.cat))
 					return ;
 

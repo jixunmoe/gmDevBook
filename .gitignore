@@ -6,3 +6,6 @@ cdn/*
 
 build.log
 .idea
+
+res/App.min.js
+res/App.css
