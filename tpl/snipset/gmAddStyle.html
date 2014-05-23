@@ -1,0 +1,8 @@
+<p>不使用 API 实现该功能:</p>
+<pre>// 返回插入的 style 元素
+var myAddStyle = function (css) {
+	var ret = document.createElement ('style');
+	ret.textContent = css;
+	(document.head || document.getElementsByTagName ('head')[0]).appendChild (ret);
+	return ret;
+}</pre>

@@ -1,4 +1,4 @@
 <p>function <b>{{foo}} (</b>
-	<span ng-if="!args">无参数</span>
-	<i ng-repeat="arg in args">{{arg}}{{$index?',':''}}</i>
+	<span ng-if="!$have('args')">无参数</span>
+	<span ng-repeat-start="arg in $split(args)" ng-repeat-end>{{$index?', ':''}}<i>{{arg}}</i></span>
 <b>)</b></p>

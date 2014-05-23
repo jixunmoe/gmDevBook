@@ -7,7 +7,26 @@
 	'use strict';
 
 	Angular
-		.module ('gmDev', ['ui.router', 'ui.bootstrap'/*, 'ui.utils'*/])
+		.module ('gmDev', ['ui.router', 'ui.bootstrap'])
+		.directive ('api', ['$state', function ($state) {
+			return {
+				transclude: true,
+				restrict: 'E',
+
+				// 不需要 scope :3
+				// scope: {},
+				compile: function ($element, tAttrs, transclude) {
+					transclude ({}, function (clone) {
+						var txt = $('<div>').append(clone).text();
+
+						$element.after($('<a>').attr('href', $state.href ('doc', {
+							cat: $element.attr('cat') || 'api',
+							entry: $element.attr('entry') || txt
+						})).text(txt)).remove();
+					});
+				}
+			};
+		}])
 		.directive('tpl', function() {
 			return {
 				transclude: true,
@@ -16,19 +35,23 @@
 				templateUrl: function(element, attrs) {
 					return 'tpl/' + attrs.src + '.html';
 				},
-				controller:[$scope, '$transclude', '$sce', '$compile', function($scope, $transclude, $sce, $compile){
+				controller:[$scope, '$transclude', '$sce', '$compile', 
+					function($scope, $transclude, $sce, $compile){
 					$transclude(function(clone){
 						$scope.$content =
-							// 标记为可信任的代码
+							// Sign as trusted code.
 							$sce.trustAsHtml(
-								// 取出编译后的 HTML
+								// Compile the content
 								$compile(Angular.element('<div>').append(clone)[0].outerHTML)
 									($scope).html()
 							);
 					});
-
 				}],
 				link: function(scope, element, attrs) {
+					scope.$split = function (str, what) {
+						console.log (str);
+						return str.split(what || ',');
+					};
 					scope.$have = function (what) {
 						return attrs.hasOwnProperty(what);
 					};
@@ -47,7 +70,7 @@
 		.run ([$global, function ($global) {
 			var Nav = $global.Nav = {
 				intro: {
-					type: 0,
+					type: 0, // Hide Title
 					title: '简介',
 					entries: {
 						gmScript: '用户脚本',
@@ -55,7 +78,7 @@
 					}
 				},
 				tutorial: {
-					type: 1,
+					type: 1, // Normal one
 					title: '开发教程',
 					entries: {
 						meta: '元数据',
@@ -66,14 +89,14 @@
 				},
 
 				api: {
-					type: 2,
+					type: 2, // URL = Name
 					title: 'API 速查',
 					list: [
 						"GM_info",
 
 						"GM_addStyle",
 
-						"GM_deleteValue", "GM_getValue", "GM_setValue", "GM_listValues",
+						"GM_getValue", "GM_setValue", "GM_deleteValue", "GM_listValues",
 
 						"GM_getResourceText", "GM_getResourceURL",
 
@@ -83,7 +106,7 @@
 				}
 			};
 
-			// Angular 会自动排序，简直差评
+			// Angular Sort the object auto 
 			$global.getKey = function (o) {
 				if (!o) return [];
 				return Object.keys(o);
@@ -106,7 +129,7 @@
 					$global.entry = curEntry[$param.entry];
 				}
 
-				// 移到页面顶部
+				// Scroll page to the top.
 				window.scrollTo (0,0);
 			});
 		}]).config (['$stateProvider', '$urlRouterProvider', function ($stateProv, $urlRouterProvider) {
@@ -114,8 +137,8 @@
 
 			$stateProv.state ('doc', {
 				url: '/doc/:cat/:entry',
-				templateUrl: function ($doc) {
-					return 'doc/' + $doc.cat + '/' + $doc.entry + '.html';
+				templateUrl: function ($param) {
+					return 'doc/' + $param.cat + '/' + $param.entry + '.html';
 				}
 			});
 		}]);

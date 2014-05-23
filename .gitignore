@@ -1,5 +1,8 @@
 build
 node_modules
-cdn
+
+# CDN needs to be downloaded separately
+cdn/*
+
 build.log
 .idea

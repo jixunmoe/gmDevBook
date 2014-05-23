@@ -1,5 +1,5 @@
 // 默认字体配置，分别为 Ubuntu 微软正黑 微软雅黑 文泉驿微米黑
-$defaultFontConfig: Ubuntu, 'Microsoft JHengHei UI', 'Microsoft YaHei UI', 'WenQuanYi MicroHei';
+$defaultFontConfig: Ubuntu, 'Microsoft JHengHei UI', 'Microsoft YaHei UI', 'Microsoft JHengHei', 'Microsoft YaHei', 'WenQuanYi MicroHei', sans-serif;
 
 body {
 	font-family: $defaultFontConfig;

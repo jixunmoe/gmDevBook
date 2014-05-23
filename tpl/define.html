@@ -1,4 +1,4 @@
-<dt><span class="text-normal">项目: </span>{{term}} <span class="label label-primary" ng-if="$have('opt')">可选</span></dt>
+<dt><span class="text-normal">项目: </span>{{term}} <span class="label label-primary" ng-if="$have('opt')">可选 <span ng-if="opt">({{opt}})</span></span></dt>
 <dd>
 	<div ng-if="type">类型: <code ng-if="type">{{ type }}</code></div>
 	<div ng-bind-html="$content"></div>

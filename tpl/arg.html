@@ -1,5 +1,5 @@
 <dl class="count-arg">
-	<dt>{{ arg }}</dt>
+	<dt>{{ arg }} <span class="label label-primary" ng-if="$have('opt')">可选 <span ng-if="opt">({{opt}})</span></span></dt>
 	<dd>
 		<div ng-if="type">类型: <code ng-if="type">{{ type }}</code></div>
 		<div ng-bind-html="$content" class="text-indent reset-count-arg"></div>

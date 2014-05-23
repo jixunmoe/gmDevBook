@@ -1,0 +1,30 @@
+<h3>描述</h3>
+<p>该函数用于写入一些数据并储存，可使用 <api>GM_getValue</api> 获取储存的数据。<code>String</code>、<code>Boolean</code> 等类型。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+	foo="GM_setValue"
+    args="name,value"
+/>
+
+<tpl src="arg"
+     arg="name"
+     type="String">
+	欲写入数据的名称。
+</tpl>
+
+<tpl src="arg"
+     arg="value"
+     type="String, Integer, Boolean">
+	欲写入数据的内容。
+</tpl>
+
+<h3>返回</h3>
+<p><code>undefined</code></p>
+
+<h3>例子</h3>
+<p>将名为 <code>foo</code> 的项目储存为 <code>bar</code></p>
+<pre>GM_setValue("foo", "bar");</pre>
+
+<h3>代码片断</h3>
+<tpl src="snipset/gmValue" />

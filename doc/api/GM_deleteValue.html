@@ -1,0 +1,43 @@
+<h3>简介</h3>
+<p>该函数用于删除一个已经储存的值。</p>
+<p>如果你需要寻找如何设定值，请参见 <api>GM_setValue</api>。</p>
+
+<h3>语法</h3>
+<tpl src="api"
+	 foo="{{entry}}"
+	 args="name"
+/>
+
+<tpl src="arg"
+     arg="name"
+     type="String">
+	需要从脚本储存数据删除的值。
+</tpl>
+
+<h3>返回</h3>
+<p><code>undefined</code></p>
+
+<h3>例子</h3>
+<p>删除一个叫做 foo 的值。</p>
+<pre>GM_deleteValue("foo");</pre>
+
+<p>删除指定数组外的数据外的值</p>
+<pre>var GM_removeAndKeep = function (arrKeysToKeep) {
+	if (!arrKeysToKeep instanceof Array)
+		// 不是合法的数组参数
+		return ;
+
+	GM_listValues().forEach (function (key) {
+		if (arrKeysToKeep.indexOf (key) == -1) {
+			// 不需要保留，删掉
+			GM_deleteValue (key);
+		}
+	});
+}；
+
+// 删除 config、cache 外的数据
+GM_removeAndKeep (['config', 'cache']);
+</pre>
+
+<h3>代码片断</h3>
+<tpl src="snipset/gmValue" />
