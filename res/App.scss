@@ -23,17 +23,21 @@ body {
 }
 
 .panel-body {
-	pre{
-		&:hover::after {
+	pre {
+		// Fix for firefox (29.0)
+		// When overflow set to auto, the transition does not work.
+		overflow: initial;
+
+		&:hover::before {
 			color: #479BEC;
 			opacity: .5;
 		}
 
-		&::after {
+		&::before {
 			content: '# 代码';
 			float: right;
 			color: #0C70E8;
-			transition: all .5s;
+			transition: all .5s ;
 		}
 	}
 	> h3 {
