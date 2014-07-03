@@ -13,7 +13,8 @@
 # 安装
 首先需要安装 Bower。
 ```bash
-sudo npm install bower -g```
+sudo npm install bower -g
+```
 
 执行 `bower install` 安装所需第三方库 (Angular, Bootstrap, jQuery)
 
