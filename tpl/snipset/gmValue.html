@@ -6,7 +6,7 @@
 	}
 },  GM_getObject = function (name, default) {
 	try {
-		return JSON.parse (GM_getValue (name, default) || '{}');
+		return JSON.parse (GM_getValue (name, '') || '{}');
 	} catch (e) {
 		// 如果抓取的数据有误报错就直接返回默认值。
 		return default;
