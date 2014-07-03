@@ -14,9 +14,17 @@
 	用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。
 </tpl>
 
+<tpl src="arg"
+     arg="aLoadInBackground"
+     type="Boolean">
+	是否后台开启目标标签页，默认为 <code>true</code>，即后台开启。
+</tpl>
+
 <h3>返回</h3>
 <p>0.8.2 之前: <code>undefined</code><br/>
 	0.8.2 之后: 新标签的 <code>window</code> 对象</p>
 
 <h3>例子</h3>
-<pre>GM_openInTab("http://www.example.com/");</pre>
+<pre>GM_openInTab("http://www.example.com/");
+GM_openInTab("http://www.example.com/", false);
+</pre>
