@@ -20,10 +20,10 @@
 <pre>greasemonkey-script:94242686-1400-4dce-982a-090cbfef7ba1/image</pre>
 
 
-<h3>Greasemonkey 1.0 的更改</h3>
-<p>现在返回的数据为 base64 编码的 <code>data:</code> 协议地址。</p>
-<p>该地址可以用于任何支援 <code>data:</code> 协议的元素 (如: 图片)。但是在 <code>&lt;object&gt;</code> 和 <code>&lt;embed&gt;</code> 下无效。</p>
-<p>这个更新的原因是 Base64 编码的地址被在此编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code>。</p>
+<h3>Greasemonkey 1.0 后的更改</h3>
+<p>GM 1.0 后返回的数据为 base64 编码过的 <code>data:</code> 协议地址。</p>
+<p>该地址可直接用于任何支援 <code>data:</code> 协议的元素 (如: <code>&lt;img&gt;</code>)。但是在 <code>&lt;object&gt;</code> 和 <code>&lt;embed&gt;</code> 下无效。</p>
+<p>做出该项更改的原因是 Base64 编码的地址在这里被重新编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code> 这两个特殊字符。</p>
 <p>因此，你可能需要使用 <code>decodeURIComponent</code> 将取得的 Base64 还原一次。</p>
 
 <h3>异常</h3>
