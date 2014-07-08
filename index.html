@@ -11,7 +11,7 @@ var myAddStyle = function (css) {
 	}
 },  GM_getObject = function (name, default) {
 	try {
-		return JSON.parse (GM_getValue (name, default) || '{}');
+		return JSON.parse (GM_getValue (name, '') || '{}');
 	} catch (e) {
 		// 如果抓取的数据有误报错就直接返回默认值。
 		return default;
@@ -42,7 +42,7 @@ GM_removeAndKeep (['config', 'cache']);
 // ==/UserScript==
 
 // 然后从这里获取资源地址
-var prototypeSource = GM_getResourceText("prototype");</pre> <h3>笔记</h3> <ul> <li>添加 <code>!important</code> 到 CSS 末尾可强行覆盖其属性值。</li> <li>如有需要，可使用「多行文本」可能方便排版。</li> </ul> <h3>代码片断</h3> <tpl src="snipset/gmAddStyle"/></script><script type="text/ng-template" id="doc/api/GM_getResourceURL.html"><h3>描述</h3> <p>该函数用于获取定义的 <code>@resource</code> 所指向的内容。</p> <h3>语法</h3> <tpl src="api" foo="GM_getResourceURL" args="resourceName"/> <tpl src="arg" arg="resourceName" type="String"> 声明的资源名称。 </tpl> <h3>返回</h3> <p><code>String</code></p> <pre>greasemonkey-script:[脚本唯一识别码]/[资源名]</pre> 如 <pre>greasemonkey-script:94242686-1400-4dce-982a-090cbfef7ba1/image</pre> <h3>Greasemonkey 1.0 的更改</h3> <p>现在返回的数据为 base64 编码的 <code>data:</code> 协议地址。</p> <p>该地址可以用于任何支援 <code>data:</code> 协议的地方 (如: 图片)，但是在 <code>&lt;object&gt;</code> 和 <code>&lt;object&gt;</code> 下无效。</p> <p>这个更新的原因是 Base64 编码的地址被在此编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code>。</p> <p>因此，你可能需要使用 <code>decodeURIComponent</code> 将取得的 Base64 还原一次。</p> <h3>异常</h3> <p>当资源不存在的时候将抛出异常。</p> <h3>例子</h3> <pre>// ==UserScript==
+var prototypeSource = GM_getResourceText("prototype");</pre></script><script type="text/ng-template" id="doc/api/GM_getResourceURL.html"><h3>描述</h3> <p>该函数用于获取定义的 <code>@resource</code> 所指向的内容。</p> <h3>语法</h3> <tpl src="api" foo="GM_getResourceURL" args="resourceName"/> <tpl src="arg" arg="resourceName" type="String"> 声明的资源名称。 </tpl> <h3>返回</h3> <p><code>String</code></p> <pre>greasemonkey-script:[脚本唯一识别码]/[资源名]</pre> 如 <pre>greasemonkey-script:94242686-1400-4dce-982a-090cbfef7ba1/image</pre> <h3>Greasemonkey 1.0 后的更改</h3> <p>GM 1.0 后返回的数据为 base64 编码过的 <code>data:</code> 协议地址。</p> <p>该地址可直接用于任何支援 <code>data:</code> 协议的元素 (如: <code>&lt;img&gt;</code>)。但是在 <code>&lt;object&gt;</code> 和 <code>&lt;embed&gt;</code> 下无效。</p> <p>做出该项更改的原因是 Base64 编码的地址在这里被重新编码了，因为 Base64 使用了 <code>+</code> 和 <code>/</code> 这两个特殊字符。</p> <p>因此，你可能需要使用 <code>decodeURIComponent</code> 将取得的 Base64 还原一次。</p> <h3>异常</h3> <p>当资源不存在的时候将抛出异常。</p> <h3>例子</h3> <pre>// ==UserScript==
 // 首先定义一个资源
 // @resource logo http://www.example.com/logo.png
 // ==/UserScript==
@@ -60,7 +60,9 @@ GM_log(GM_getValue("timezoneOffset", +8));</pre> <h3>代码片断</h3> <tpl src=
 // ==/UserScript==
 
 GM_log("This is an example of GM_log");</pre> <p>将产生这样的输出：</p> <pre>http://www.example.com/GM_log Example: This is an example of GM_log</pre> <h3>语法</h3> <tpl src="api" foo="GM_log" args="message"/> <tpl src="arg" arg="message" type="String"> 用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <pre>GM_log("Hello, World!");
-GM_log("Warning, " + someInputField.value + "!");</pre></script><script type="text/ng-template" id="doc/api/GM_openInTab.html"><h3>描述</h3> <p>在新标签页开启指定地址。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" args="url"/> <tpl src="arg" arg="url" type="String"> 用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。 </tpl> <h3>返回</h3> <p>0.8.2 之前: <code>undefined</code><br/> 0.8.2 之后: 新标签的 <code>window</code> 对象</p> <h3>例子</h3> <pre>GM_openInTab("http://www.example.com/");</pre></script><script type="text/ng-template" id="doc/api/GM_registerMenuCommand.html"><h3>简介</h3> <p>该函数允许用户脚本添加菜单到用户脚本指令。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" arg="caption,commandFunc,accessKey"/> <tpl src="arg" arg="caption" type="String"> 用于显示的项目标题。 </tpl> <tpl src="arg" arg="commandFunc" type="Function"> 单击菜单后执行的回调。 </tpl> <tpl src="arg" arg="accessKey" type="String"> 菜单界面的热键；一个单子节符号，一般为项目标题中的一个字 (<a href="https://developer.mozilla.org/en/XUL/Attribute/accesskey" target="_blank">MDN</a>)。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <pre>GM_registerMenuCommand("Hello, world (simple)", function () {
+GM_log("Warning, " + someInputField.value + "!");</pre></script><script type="text/ng-template" id="doc/api/GM_openInTab.html"><h3>描述</h3> <p>在新标签页开启指定地址。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" args="url"/> <tpl src="arg" arg="url" type="String"> 用于输出的文本内容，也可以为带有 <code>.toString ()</code> 方法的变量。 </tpl> <tpl src="arg" arg="aLoadInBackground" type="Boolean"> 是否后台开启目标标签页，默认为 <code>true</code>，即后台开启。 </tpl> <h3>返回</h3> <p>0.8.2 之前: <code>undefined</code><br/> 0.8.2 之后: 新标签的 <code>window</code> 对象</p> <h3>例子</h3> <pre>GM_openInTab("http://www.example.com/");
+GM_openInTab("http://www.example.com/", false);
+</pre></script><script type="text/ng-template" id="doc/api/GM_registerMenuCommand.html"><h3>简介</h3> <p>该函数允许用户脚本添加菜单到用户脚本指令。</p> <h3>语法</h3> <tpl src="api" foo="{{entry}}" arg="caption,commandFunc,accessKey"/> <tpl src="arg" arg="caption" type="String"> 用于显示的项目标题。 </tpl> <tpl src="arg" arg="commandFunc" type="Function"> 单击菜单后执行的回调。 </tpl> <tpl src="arg" arg="accessKey" type="String"> 菜单界面的热键；一个单子节符号，一般为项目标题中的一个字 (<a href="https://developer.mozilla.org/en/XUL/Attribute/accesskey" target="_blank">MDN</a>)。 </tpl> <h3>返回</h3> <p><code>undefined</code></p> <h3>例子</h3> <pre>GM_registerMenuCommand("Hello, world (simple)", function () {
 	/// ...
 });
 
