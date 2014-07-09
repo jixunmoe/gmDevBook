@@ -50,7 +50,7 @@ var prototypeSource = GM_getResourceText("prototype");</pre></script><script typ
 var img = document.createElement('img');
 // 将取得的地址作为图像地址并插入到页面
 img.src = GM_getResourceURL("logo");
-document.body.appendChild(img);</pre></script><script type="text/ng-template" id="doc/api/GM_getValue.html"><h3>描述</h3> <p>该函数用于获取脚本之前使用 <api>GM_setValue</api> 赋值储存的数据，可以为 <code>String</code>、<code>Boolean</code> 等类型。</p> <h3>语法</h3> <tpl src="api" foo="GM_addStyle" args="name,default"/> <tpl src="arg" arg="name" type="String"> 欲获取数据的名称。 </tpl> <tpl src="arg" arg="default" type="任意" opt="undefined"> 如果上述数据不存在时返回的值。 </tpl> <h3>返回</h3> <p>该函数将返回获取到的值，如果不存在则返回 <code>default</code> 传入的值。</p> <h3>例子</h3> <p>抓取一个叫做 foo 的储存值</p> <pre>// 输出储存为 foo 的值或 undefined
+document.body.appendChild(img);</pre></script><script type="text/ng-template" id="doc/api/GM_getValue.html"><h3>描述</h3> <p>该函数用于获取脚本之前使用 <api>GM_setValue</api> 赋值储存的数据，可以为 <code>String</code>、<code>Boolean</code> 等类型。</p> <h3>语法</h3> <tpl src="api" foo="GM_getValue" args="name,default"/> <tpl src="arg" arg="name" type="String"> 欲获取数据的名称。 </tpl> <tpl src="arg" arg="default" type="任意" opt="undefined"> 如果上述数据不存在时返回的值。 </tpl> <h3>返回</h3> <p>该函数将返回获取到的值，如果不存在则返回 <code>default</code> 传入的值。</p> <h3>例子</h3> <p>抓取一个叫做 foo 的储存值</p> <pre>// 输出储存为 foo 的值或 undefined
 
 GM_log(GM_getValue("foo")); </pre> <p>抓取一个叫做 'timezoneOffset' 的值并提供默认值:</p> <pre>// 如果该值不存在 GM_getValue() 则会返回 +8 (整数)
 
