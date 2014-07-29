@@ -32,7 +32,7 @@ var minHTML = function (HTML) {
 		// removeEmptyElements: true,
 		keepClosingSlash: true,
 		caseSensitive: true
-	});
+	}).replace(/>\s+</g, '><');
 };
 
 var procDir = function (dirName) {
